@@ -23,8 +23,8 @@
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
     label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
     .field{display:flex;gap:8px;align-items:center}
-    input[type=number], select{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:transparent;color:inherit;font-size:15px}
-    .field input[type=number]{flex:1;min-width:0;width:100%}
+    input[type=text], select{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:transparent;color:inherit;font-size:15px}
+    .field input[type=text]{flex:1;min-width:0;width:100%}
     .field select{flex:0 0 auto}
 
     .actions{display:flex;gap:10px;align-items:center;margin-top:14px}
@@ -58,8 +58,8 @@
       h1{font-size:18px}
       .hero-image{width:78px;height:54px}
     }
-  
-    /* New large right-side hero image */
+
+    /* Centered hero image */
     .hero-wrapper{
       width:100%;
       display:flex;
@@ -78,8 +78,7 @@
       .hero-wrapper{justify-content:center;}
       .hero-image-large{width:220px;height:160px;}
     }
-
-</style>
+  </style>
 </head>
 <body>
   <div class="container">
@@ -90,7 +89,6 @@
       </div>
     </header>
 
-    <!-- Large right-side image -->
     <div class="hero-wrapper">
       <img class="hero-image-large" src="https://www.shutterstock.com/image-vector/density-lever-demonstrated-two-objects-600nw-2166449637.jpg" alt="density demo"/>
     </div>
@@ -100,7 +98,7 @@
         <div>
           <label for="mass">Mass</label>
           <div class="field">
-            <input id="mass" type="number" step="any" placeholder="e.g. 2.5" />
+            <input id="mass" type="text" placeholder="e.g. 2.5 or 1.2e6" />
             <select id="massUnit">
               <option value="kg">kg</option>
               <option value="g">g</option>
@@ -112,7 +110,7 @@
         <div>
           <label for="density">Density</label>
           <div class="field">
-            <input id="density" type="number" step="any" placeholder="e.g. 7.85" />
+            <input id="density" type="text" placeholder="e.g. 7.85 or 1.2e-6" />
             <select id="densityUnit">
               <option value="kg/m3">kg/m³</option>
               <option value="g/cm3">g/cm³</option>
@@ -124,7 +122,7 @@
         <div>
           <label for="volume">Volume</label>
           <div class="field">
-            <input id="volume" type="number" step="any" placeholder="e.g. 0.003" />
+            <input id="volume" type="text" placeholder="e.g. 0.003 or 6e5" />
             <select id="volumeUnit">
               <option value="m3">m³</option>
               <option value="cm3">cm³</option>
@@ -161,17 +159,32 @@
   </div>
 
   <script>
+    // Robust numeric parsing that accepts scientific notation (e or E), commas, and whitespace
+    function parseNumeric(str){
+      if (str === '' || str === null || str === undefined) return null;
+      if (typeof str !== 'string') str = String(str);
+      str = str.replace(/,/g,'').trim();
+      if (str === '') return null;
+      // Allow leading + sign
+      if (/^[+]/.test(str)) str = str.slice(1);
+      // Use Number to parse scientific notation (handles 'e' or 'E')
+      const n = Number(str);
+      if (!isFinite(n)) return null;
+      return n;
+    }
+
     // Conversion helpers
     // Base units: mass -> kg, density -> kg/m3, volume -> m3
-    function massToKg(value, unit){ if (value===''||value==null) return null; value=Number(value); if (isNaN(value)) return null; if(unit==='g') return value/1000; if(unit==='lb') return value*0.45359237; return value; }
+    function massToKg(value, unit){ const v = parseNumeric(value); if (v===null) return null; if(unit==='g') return v/1000; if(unit==='lb') return v*0.45359237; return v; }
     function kgToMass(value, unit){ if (value==null) return null; if(unit==='g') return value*1000; if(unit==='lb') return value/0.45359237; return value; }
 
-    function densityToKgPerM3(value, unit){ if (value===''||value==null) return null; value=Number(value); if (isNaN(value)) return null; if(unit==='g/cm3') return value*1000; if(unit==='kg/mm3') return value*1e9; return value; }
+    function densityToKgPerM3(value, unit){ const v = parseNumeric(value); if (v===null) return null; if(unit==='g/cm3') return v*1000; if(unit==='kg/mm3') return v*1e9; return v; }
     function kgPerM3ToUnit(value, unit){ if (value==null) return null; if(unit==='g/cm3') return value/1000; if(unit==='kg/mm3') return value/1e9; return value; }
 
-    function volumeToM3(value, unit){ if (value===''||value==null) return null; value=Number(value); if (isNaN(value)) return null; if(unit==='cm3') return value*1e-6; if(unit==='mm3') return value*1e-9; if(unit==='L') return value*1e-3; if(unit==='in3') return value*1.6387064e-5; return value; }
+    function volumeToM3(value, unit){ const v = parseNumeric(value); if (v===null) return null; if(unit==='cm3') return v*1e-6; if(unit==='mm3') return v*1e-9; if(unit==='L') return v*1e-3; if(unit==='in3') return v*1.6387064e-5; return v; }
     function m3ToVolume(value, unit){ if (value==null) return null; if(unit==='cm3') return value/1e-6; if(unit==='mm3') return value/1e-9; if(unit==='L') return value/1e-3; if(unit==='in3') return value/1.6387064e-5; return value; }
 
+    // Elements
     const massEl = document.getElementById('mass');
     const densityEl = document.getElementById('density');
     const volumeEl = document.getElementById('volume');
@@ -193,7 +206,19 @@
 
     function warn(text){ warnDiv.innerText = text; warnDiv.style.display='block'; }
 
-    function formatNumber(x){ if (!isFinite(x)) return String(x); const abs=Math.abs(x); if(abs===0)return '0'; if(abs>=0.000001 && abs<1e9) return Number(x.toPrecision(6)).toString(); return x.toExponential(6); }
+    function formatNumber(x){
+      if (!isFinite(x)) return String(x);
+      // Always use scientific notation for values < 0.001 or > 1e6
+      const abs = Math.abs(x);
+      if (abs === 0) return '0';
+
+      // Force scientific notation for very small numbers to avoid long zeros
+      if (abs < 0.001) return x.toExponential(6).replace(/e\+?/, 'e');
+
+      // Normal range → show up to 6 significant digits
+      const normal = Number(x.toPrecision(6));
+      return normal.toString();
+    }
 
     function calculate(){
       warnDiv.style.display='none'; resultDiv.style.display='none';
@@ -209,9 +234,20 @@
       const vBase = volumeToM3(vIn, volumeUnit.value);
 
       let computed = null; let computedName='';
-      if (mIn !== '' && dIn !== ''){ if (dBase===0){ warn('Density cannot be zero.'); return; } computed = mBase / dBase; computedName='volume'; }
-      else if (mIn !== '' && vIn !== ''){ if (vBase===0){ warn('Volume cannot be zero.'); return; } computed = mBase / vBase; computedName='density'; }
-      else if (dIn !== '' && vIn !== ''){ computed = dBase * vBase; computedName='mass'; }
+      if (mIn !== '' && dIn !== ''){
+        if (dBase===null){ warn('Density input not recognized — please use numeric or scientific notation (e.g. 1.23e4).'); return; }
+        if (dBase===0){ warn('Density cannot be zero.'); return; }
+        if (mBase===null){ warn('Mass input not recognized — please use numeric or scientific notation (e.g. 1.23e4).'); return; }
+        computed = mBase / dBase; computedName='volume'; }
+      else if (mIn !== '' && vIn !== ''){
+        if (vBase===null){ warn('Volume input not recognized — please use numeric or scientific notation (e.g. 1.23e4).'); return; }
+        if (vBase===0){ warn('Volume cannot be zero.'); return; }
+        if (mBase===null){ warn('Mass input not recognized — please use numeric or scientific notation (e.g. 1.23e4).'); return; }
+        computed = mBase / vBase; computedName='density'; }
+      else if (dIn !== '' && vIn !== ''){
+        if (dBase===null){ warn('Density input not recognized — please use numeric or scientific notation (e.g. 1.23e4).'); return; }
+        if (vBase===null){ warn('Volume input not recognized — please use numeric or scientific notation (e.g. 1.23e4).'); return; }
+        computed = dBase * vBase; computedName='mass'; }
 
       if (computed===null || !isFinite(computed)){ warn('Calculation failed — please check inputs.'); return; }
 
