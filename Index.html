@@ -3,39 +3,97 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mass ⇄ Density ⇄ Volume Calculator</title>
+  <title>Mass ⇄ Density ⇄ Volume — Calculator (Responsive)</title>
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--muted:#9fb0c8;--accent:#2dd4bf}
+    :root{--bg:#fff9db;--card:#fffef6;--muted:#111;--accent:#0b7ea6}
     *{box-sizing:border-box}
-    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(180deg,#071028 0%, #08142a 100%); color:#e6f0f6; margin:0; padding:28px}
-    .container{max-width:820px;margin:0 auto}
-    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
-    header h1{font-size:20px;margin:0}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;margin:0;background:var(--bg);color:#000}
+    .container{max-width:920px;margin:18px auto;padding:16px}
+
+    /* Header and hero image */
+    header{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-right:140px}
+    header .brand{max-width:640px}
+    h1{font-size:22px;margin:0}
+    .welcome{font-size:15px;margin-top:6px}
+    .header-right{position:absolute;right:18px;top:18px;display:flex;align-items:center;justify-content:center}
+    .hero-image{width:120px;height:90px;object-fit:cover;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+
+    /* Card & form */
+    .card{width:100%;max-width:860px;margin-top:12px;padding:18px;border-radius:12px;background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
     label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
     .field{display:flex;gap:8px;align-items:center}
-    input[type=number]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:15px}
-    select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    input[type=number], select{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:transparent;color:inherit;font-size:15px}
+    .field input[type=number]{flex:1;min-width:0;width:100%}
+    .field select{flex:0 0 auto}
+
     .actions{display:flex;gap:10px;align-items:center;margin-top:14px}
-    button{background:var(--accent);border:none;padding:10px 12px;border-radius:10px;color:#042020;font-weight:600;cursor:pointer}
-    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    button{background:var(--accent);border:none;padding:10px 12px;border-radius:10px;color:#fff;font-weight:600;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(0,0,0,0.08);color:var(--muted)}
+
     .info{margin-top:12px;color:var(--muted);font-size:14px}
-    .result{margin-top:16px;padding:12px;border-radius:10px;background:rgba(45,212,191,0.06);color:var(--accent);font-weight:700}
-    .warning{color:#ffb86b;background:rgba(255,184,107,0.04);padding:8px;border-radius:8px;margin-top:10px}
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
-    @media (max-width:760px){.grid{grid-template-columns:1fr;}}
-  </style>
+    .result{margin-top:16px;padding:12px;border-radius:10px;background:rgba(11,126,166,0.06);color:var(--accent);font-weight:700}
+    .warning{color:#b65b00;background:rgba(182,91,0,0.04);padding:8px;border-radius:8px;margin-top:10px}
+
+    /* Density of list */
+    .general-info{margin-top:14px;background:#fff;padding:12px;border-radius:8px;color:#000}
+    .general-info h3{margin:0 0 8px 0}
+    .gi-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .gi-item{font-size:14px}
+
+    /* Critical layout rules to prevent overflow */
+    .grid>div{min-width:0}
+
+    /* Responsive behavior */
+    @media (max-width:820px){
+      header{position:static;padding-right:0;flex-direction:column;align-items:flex-start;gap:8px}
+      .header-right{position:static;order:2;margin-top:6px}
+      .hero-image{width:90px;height:60px}
+      .grid{grid-template-columns:1fr}
+      .gi-list{grid-template-columns:1fr}
+    }
+
+    @media (max-width:420px){
+      .container{padding:12px}
+      h1{font-size:18px}
+      .hero-image{width:78px;height:54px}
+    }
+  
+    /* New large right-side hero image */
+    .hero-wrapper{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      margin:10px 0 20px 0;
+    }
+    .hero-image-large{
+      width:300px;
+      height:220px;
+      object-fit:cover;
+      border-radius:12px;
+      box-shadow:0 4px 18px rgba(0,0,0,0.12);
+    }
+
+    @media(max-width:820px){
+      .hero-wrapper{justify-content:center;}
+      .hero-image-large{width:220px;height:160px;}
+    }
+
+</style>
 </head>
 <body>
   <div class="container">
     <header>
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="22" height="22" rx="6" fill="#05232a" stroke="#2dd4bf"/></svg>
-      <div>
+      <div class="brand">
         <h1>Mass ⇄ Density ⇄ Volume — Calculator</h1>
-        <div style="color:var(--muted);font-size:13px">Enter any two values, the third will be calculated. Units convert automatically.</div>
+        <div class="welcome">Naveenkumar A: Thankyou for visiting! I am here to help you.</div>
       </div>
     </header>
+
+    <!-- Large right-side image -->
+    <div class="hero-wrapper">
+      <img class="hero-image-large" src="https://www.shutterstock.com/image-vector/density-lever-demonstrated-two-objects-600nw-2166449637.jpg" alt="density demo"/>
+    </div>
 
     <div class="card">
       <div class="grid">
@@ -46,6 +104,7 @@
             <select id="massUnit">
               <option value="kg">kg</option>
               <option value="g">g</option>
+              <option value="lb">lb</option>
             </select>
           </div>
         </div>
@@ -57,6 +116,7 @@
             <select id="densityUnit">
               <option value="kg/m3">kg/m³</option>
               <option value="g/cm3">g/cm³</option>
+              <option value="kg/mm3">kg/mm³</option>
             </select>
           </div>
         </div>
@@ -68,7 +128,9 @@
             <select id="volumeUnit">
               <option value="m3">m³</option>
               <option value="cm3">cm³</option>
+              <option value="mm3">mm³</option>
               <option value="L">L</option>
+              <option value="in3">in³</option>
             </select>
           </div>
         </div>
@@ -77,33 +139,38 @@
       <div class="actions">
         <button id="calc">Calculate</button>
         <button class="secondary" id="clear">Clear</button>
-        <button class="secondary" id="swapUnits">Swap to engineering-friendly units</button>
       </div>
 
       <div id="message" class="info">Formula used: <strong>mass = density × volume</strong></div>
       <div id="result" class="result" style="display:none"></div>
       <div id="warn" class="warning" style="display:none"></div>
-    </div>
 
-    <footer>
-      Tips: Use consistent significant figures. For solids, density is usually in g/cm³ (steel ≈ 7.85 g/cm³). For fluids, kg/m³ (water ≈ 1000 kg/m³).
-    </footer>
+      <div class="general-info" id="generalInfo">
+        <h3>Density of</h3>
+        <div class="gi-list">
+          <div class="gi-item">Steel: 7.85e-6 kg/mm³</div>
+          <div class="gi-item">Stainless steel: 8.00e-6 kg/mm³</div>
+          <div class="gi-item">Aluminum: 2.70e-6 kg/mm³</div>
+          <div class="gi-item">PEEK: 1.32e-6 kg/mm³</div>
+          <div class="gi-item">Titanium grade 5: 4.43e-6 kg/mm³</div>
+          <div class="gi-item">Water: 1.00e-6 kg/mm³</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script>
-    // Helper: convert any input to base units: mass -> kg, density -> kg/m3, volume -> m3
-    const toBase = {
-      mass(value, unit){ if (value === '' || value === null) return null; value = Number(value); if (isNaN(value)) return null; return unit==='g'? value/1000 : value; },
-      density(value, unit){ if (value === '' || value === null) return null; value = Number(value); if (isNaN(value)) return null; return unit==='g/cm3' ? value*1000 : value; },
-      volume(value, unit){ if (value === '' || value === null) return null; value = Number(value); if (isNaN(value)) return null; if (unit==='cm3') return value*1e-6; if (unit==='L') return value*1e-3; return value; }
-    };
+    // Conversion helpers
+    // Base units: mass -> kg, density -> kg/m3, volume -> m3
+    function massToKg(value, unit){ if (value===''||value==null) return null; value=Number(value); if (isNaN(value)) return null; if(unit==='g') return value/1000; if(unit==='lb') return value*0.45359237; return value; }
+    function kgToMass(value, unit){ if (value==null) return null; if(unit==='g') return value*1000; if(unit==='lb') return value/0.45359237; return value; }
 
-    // From base units back to selected unit
-    const fromBase = {
-      mass(value, unit){ if (value===null) return null; return unit==='g'? value*1000 : value; },
-      density(value, unit){ if (value===null) return null; return unit==='g/cm3'? value/1000 : value; },
-      volume(value, unit){ if (value===null) return null; if (unit==='cm3') return value/1e-6; if (unit==='L') return value/1e-3; return value; }
-    };
+    function densityToKgPerM3(value, unit){ if (value===''||value==null) return null; value=Number(value); if (isNaN(value)) return null; if(unit==='g/cm3') return value*1000; if(unit==='kg/mm3') return value*1e9; return value; }
+    function kgPerM3ToUnit(value, unit){ if (value==null) return null; if(unit==='g/cm3') return value/1000; if(unit==='kg/mm3') return value/1e9; return value; }
+
+    function volumeToM3(value, unit){ if (value===''||value==null) return null; value=Number(value); if (isNaN(value)) return null; if(unit==='cm3') return value*1e-6; if(unit==='mm3') return value*1e-9; if(unit==='L') return value*1e-3; if(unit==='in3') return value*1.6387064e-5; return value; }
+    function m3ToVolume(value, unit){ if (value==null) return null; if(unit==='cm3') return value/1e-6; if(unit==='mm3') return value/1e-9; if(unit==='L') return value/1e-3; if(unit==='in3') return value/1.6387064e-5; return value; }
 
     const massEl = document.getElementById('mass');
     const densityEl = document.getElementById('density');
@@ -113,7 +180,6 @@
     const volumeUnit = document.getElementById('volumeUnit');
     const calcBtn = document.getElementById('calc');
     const clearBtn = document.getElementById('clear');
-    const swapBtn = document.getElementById('swapUnits');
     const resultDiv = document.getElementById('result');
     const messageDiv = document.getElementById('message');
     const warnDiv = document.getElementById('warn');
@@ -125,84 +191,43 @@
       return [a,b,c].filter(Boolean).length;
     }
 
+    function warn(text){ warnDiv.innerText = text; warnDiv.style.display='block'; }
+
+    function formatNumber(x){ if (!isFinite(x)) return String(x); const abs=Math.abs(x); if(abs===0)return '0'; if(abs>=0.000001 && abs<1e9) return Number(x.toPrecision(6)).toString(); return x.toExponential(6); }
+
     function calculate(){
-      warnDiv.style.display='none';
-      resultDiv.style.display='none';
+      warnDiv.style.display='none'; resultDiv.style.display='none';
       const filled = countFilled();
       if (filled < 2){ warn('Enter any two values to calculate the third.'); return; }
       if (filled > 2){ warn('You have entered all three values. Please remove the one you want me to calculate, or click Clear.'); return; }
 
-      // convert inputs to base units
       const mIn = massEl.value.trim();
       const dIn = densityEl.value.trim();
       const vIn = volumeEl.value.trim();
-      const mBase = toBase.mass(mIn, massUnit.value);
-      const dBase = toBase.density(dIn, densityUnit.value);
-      const vBase = toBase.volume(vIn, volumeUnit.value);
+      const mBase = massToKg(mIn, massUnit.value);
+      const dBase = densityToKgPerM3(dIn, densityUnit.value);
+      const vBase = volumeToM3(vIn, volumeUnit.value);
 
-      let computed = null;
-      let computedName = '';
+      let computed = null; let computedName='';
+      if (mIn !== '' && dIn !== ''){ if (dBase===0){ warn('Density cannot be zero.'); return; } computed = mBase / dBase; computedName='volume'; }
+      else if (mIn !== '' && vIn !== ''){ if (vBase===0){ warn('Volume cannot be zero.'); return; } computed = mBase / vBase; computedName='density'; }
+      else if (dIn !== '' && vIn !== ''){ computed = dBase * vBase; computedName='mass'; }
 
-      // If mass and density present -> volume = mass / density
-      if (mIn !== '' && dIn !== ''){
-        if (dBase === 0){ warn('Density cannot be zero.'); return; }
-        computed = mBase / dBase; computedName='volume';
-      }
-      // If mass and volume present -> density = mass / volume
-      else if (mIn !== '' && vIn !== ''){
-        if (vBase === 0){ warn('Volume cannot be zero.'); return; }
-        computed = mBase / vBase; computedName='density';
-      }
-      // If density and volume present -> mass = density * volume
-      else if (dIn !== '' && vIn !== ''){
-        computed = dBase * vBase; computedName='mass';
-      }
+      if (computed===null || !isFinite(computed)){ warn('Calculation failed — please check inputs.'); return; }
 
-      if (computed === null || !isFinite(computed)){
-        warn('Calculation failed — please check inputs.'); return;
-      }
-
-      // Convert computed to user's selected unit for that quantity
       let displayValue, unitLabel;
-      if (computedName==='mass'){ displayValue = fromBase.mass(computed, massUnit.value); unitLabel = massUnit.options[massUnit.selectedIndex].text; }
-      if (computedName==='density'){ displayValue = fromBase.density(computed, densityUnit.value); unitLabel = densityUnit.options[densityUnit.selectedIndex].text; }
-      if (computedName==='volume'){ displayValue = fromBase.volume(computed, volumeUnit.value); unitLabel = volumeUnit.options[volumeUnit.selectedIndex].text; }
+      if (computedName==='mass'){ displayValue = kgToMass(computed, massUnit.value); unitLabel = massUnit.options[massUnit.selectedIndex].text; }
+      if (computedName==='density'){ displayValue = kgPerM3ToUnit(computed, densityUnit.value); unitLabel = densityUnit.options[densityUnit.selectedIndex].text; }
+      if (computedName==='volume'){ displayValue = m3ToVolume(computed, volumeUnit.value); unitLabel = volumeUnit.options[volumeUnit.selectedIndex].text; }
 
-      // Nice formatting (avoid exponential for engineer-friendly numbers)
-      const formatted = formatNumber(displayValue);
-      resultDiv.innerText = `${computedName.toUpperCase()}: ${formatted} ${unitLabel}`;
-      resultDiv.style.display = 'block';
+      resultDiv.innerText = `${computedName.toUpperCase()}: ${formatNumber(displayValue)} ${unitLabel}`;
+      resultDiv.style.display='block';
     }
-
-    function formatNumber(x){
-      if (!isFinite(x)) return String(x);
-      const abs = Math.abs(x);
-      if (abs === 0) return '0';
-      if (abs >= 0.001 && abs < 1e6){
-        // show up to 6 significant digits but avoid .000000
-        return Number(x.toPrecision(6)).toString();
-      }
-      // scientific for very large/small
-      return x.toExponential(6);
-    }
-
-    function warn(text){ warnDiv.innerText = text; warnDiv.style.display='block'; }
 
     calcBtn.addEventListener('click', calculate);
     clearBtn.addEventListener('click', ()=>{ massEl.value=''; densityEl.value=''; volumeEl.value=''; resultDiv.style.display='none'; warnDiv.style.display='none'; });
 
-    // Swap units to a commonly used engineering set (kg, kg/m3, m3)
-    swapBtn.addEventListener('click', ()=>{
-      massUnit.value='kg'; densityUnit.value='kg/m3'; volumeUnit.value='m3';
-    });
-
-    // Also calculate on Enter key when focus inside inputs
     [massEl,densityEl,volumeEl].forEach(el=>el.addEventListener('keydown', (e)=>{ if (e.key==='Enter') calculate(); }));
-
-    // Show formula and small example when user changes units
-    [massUnit,densityUnit,volumeUnit].forEach(el=>el.addEventListener('change', ()=>{
-      messageDiv.innerHTML = 'Formula used: <strong>mass = density × volume</strong> — units convert automatically.';
-    }));
   </script>
 </body>
 </html>
